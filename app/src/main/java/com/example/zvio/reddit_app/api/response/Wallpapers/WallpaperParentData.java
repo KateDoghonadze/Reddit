@@ -1,4 +1,4 @@
-package com.example.zvio.reddit_app.api.response;
+package com.example.zvio.reddit_app.api.response.Wallpapers;
 
 import java.util.ArrayList;
 
@@ -6,13 +6,13 @@ import java.util.ArrayList;
  * Created by ZVIO on 10/28/2016.
  */
 
-public class ParentData {
+public class WallpaperParentData {
     String modhush;
     String after;
     String before;
-    ArrayList<Child> children;
+    ArrayList<WallpaperChild> children;
 
-    public ParentData(String modhush, String after, String before, ArrayList<Child> children) {
+    public WallpaperParentData(String modhush, String after, String before, ArrayList<WallpaperChild> children) {
         this.modhush = modhush;
         this.after = after;
         this.before = before;
@@ -43,11 +43,11 @@ public class ParentData {
         this.before = before;
     }
 
-    public ArrayList<Child> getChildren() {
+    public ArrayList<WallpaperChild> getChildren() {
         return children;
     }
 
-    public void setChildren(ArrayList<Child> children) {
+    public void setChildren(ArrayList<WallpaperChild> children) {
         this.children = children;
     }
 }

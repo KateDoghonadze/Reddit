@@ -1,22 +1,23 @@
-package com.example.zvio.reddit_app.api.response;
+package com.example.zvio.reddit_app.api.response.Wallpapers;
 
 /**
- * Created by ZVIO on 10/28/2016.
+ * Created by QETO on 10/30/2016.
  */
 
-public class Source {
+public class WallpaperSource {
+
     String url;
     int width;
     int height;
 
-    public Source(String url, int width, int height) {
+    public WallpaperSource(String url, int width, int height) {
         this.url = url;
         this.width = width;
         this.height = height;
     }
 
     public String getUrl() {
-        return url;
+        return url.replaceAll("&amp;", "&");
     }
 
     public void setUrl(String url) {
@@ -39,4 +40,3 @@ public class Source {
         this.height = height;
     }
 }
-

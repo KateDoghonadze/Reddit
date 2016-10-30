@@ -1,14 +1,14 @@
-package com.example.zvio.reddit_app.api.response;
+package com.example.zvio.reddit_app.api.response.Wallpapers;
 
 /**
  * Created by ZVIO on 10/28/2016.
  */
 
-public class Child {
+public class WallpaperChild {
     String kind;
-    ChildData data;
+    WallpaperChildData data;
 
-    public Child(String kind, ChildData data) {
+    public WallpaperChild(String kind, WallpaperChildData data) {
         this.kind = kind;
         this.data = data;
     }
@@ -21,11 +21,11 @@ public class Child {
         this.kind = kind;
     }
 
-    public ChildData getData() {
+    public WallpaperChildData getData() {
         return data;
     }
 
-    public void setData(ChildData data) {
+    public void setData(WallpaperChildData data) {
         this.data = data;
     }
 }
