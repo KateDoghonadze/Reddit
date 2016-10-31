@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.zvio.reddit_app.R;
 import com.example.zvio.reddit_app.api.response.Wallpapers.Wallpaper;
 import com.example.zvio.reddit_app.api.response.Wallpapers.WallpaperChild;
+import com.example.zvio.reddit_app.api.response.Wallpapers.WallpaperResolution;
+import com.example.zvio.reddit_app.api.response.Wallpapers.WallpaperSource;
 import com.example.zvio.reddit_app.ui.components.RecyclerItemClickListener;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -46,7 +48,7 @@ public class WallpaperRecyclerAdapter extends RecyclerView.Adapter<WallpaperRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        String source = getItem(position).getResolutions().get(2).getUrl();
+        String source = getItem(position).getResolutions().get(1).getUrl();
         Log.d("Wallpaper", source);
         holder.progressBar.setVisibility(View.VISIBLE);
         Ion.with(context).load(source).intoImageView(holder.image).setCallback(new FutureCallback<ImageView>() {
@@ -90,7 +92,8 @@ public class WallpaperRecyclerAdapter extends RecyclerView.Adapter<WallpaperRecy
 
         @Override
         public void onClick(View view) {
-            itemClickListener.onItemClick(getItem(getAdapterPosition()));
+            ArrayList<WallpaperSource> sources =  getItem(getAdapterPosition()).getResolutions();
+            itemClickListener.onItemClick(sources.get(sources.size()-1));
         }
     }
 }

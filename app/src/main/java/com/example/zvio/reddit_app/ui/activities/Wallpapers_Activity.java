@@ -36,16 +36,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Wallpapers_Activity extends AppCompatActivity implements RecyclerItemClickListener{
+public class Wallpapers_Activity extends AppCompatActivity implements RecyclerItemClickListener {
     private RecyclerView recyclerView;
     private WallpaperRecyclerAdapter wpRecyclerAdapter;
     private int screenHeight = 0;
     private int screenWidthFrame = 0;
-//    private View gifFrame;
-    private ProgressBar progressBar;
-    private ImageView imageViewWallpaper;
+    private View wpFrame;
+    private ProgressBar progressBar,frameProgress;
+    private ImageView imageViewWallpaper, fullScreenWallpaper;
     private Toolbar toolbar;
-
 
 
     private Point getScreenDimens() {
@@ -64,12 +63,16 @@ public class Wallpapers_Activity extends AppCompatActivity implements RecyclerIt
         screenWidthFrame = getScreenDimens().x;
 
         progressBar = (ProgressBar) findViewById(R.id.wallpaperProgressBar);
+        frameProgress = (ProgressBar)findViewById(R.id.frame_progress);
         imageViewWallpaper = (ImageView) findViewById(R.id.imageViewWallpaper);
+        fullScreenWallpaper = (ImageView) findViewById(R.id.full_screen_wallpaper);
 
         recyclerView = (RecyclerView) findViewById(R.id.walpaperRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         wpRecyclerAdapter = new WallpaperRecyclerAdapter(this, this);
         recyclerView.setAdapter(wpRecyclerAdapter);
+
+        wpFrame = findViewById(R.id.wallpaper_frame);
 
         RedditApi redditApi = new RedditApi();
         redditApi.getGifJson(callback);
@@ -128,64 +131,61 @@ public class Wallpapers_Activity extends AppCompatActivity implements RecyclerIt
         }
     };
 
-    @Override
-    public void onItemClick(Wallpaper wpURl) {
 
+    @Override
+    public void onItemClick(final WallpaperSource source) {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_out);
+        animation.setInterpolator(new OvershootInterpolator());
+        wpFrame.setVisibility(View.VISIBLE);
+        frameProgress.setVisibility(View.VISIBLE);
+        frameProgress.startAnimation(animation);
+        String url = source.getUrl();
+        Ion.with(Wallpapers_Activity.this).load(source.getUrl()).intoImageView(fullScreenWallpaper).setCallback(new FutureCallback<ImageView>() {
+            @Override
+            public void onCompleted(Exception e, ImageView result) {
+
+                frameProgress.setVisibility(View.GONE);
+                ViewGroup.LayoutParams imageParams = fullScreenWallpaper.getLayoutParams();
+                ViewGroup.LayoutParams frameParams = wpFrame.getLayoutParams();
+
+                float ratio = (float) screenWidthFrame / (float) source.getWidth();
+
+                imageParams.height = (int) (source.getHeight() * ratio);
+                imageParams.width = screenWidthFrame;
+
+
+                frameParams.height = imageParams.height;
+                frameParams.width = imageParams.width;
+
+                wpFrame.setLayoutParams(frameParams);
+                fullScreenWallpaper.setLayoutParams(imageParams);
+            }
+        });
     }
 
+    @Override
+    public void onBackPressed() {
+        if (wpFrame.getVisibility() == View.VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_in);
+            animation.setInterpolator(new OvershootInterpolator());
+            wpFrame.startAnimation(animation);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
 
-//    @Override
-//    public void onItemClick(final WallpaperSource source) {
-////        Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_out);
-////        animation.setInterpolator(new OvershootInterpolator());
-////        gifFrame.setVisibility(View.VISIBLE);
-//        progressBar.setVisibility(View.VISIBLE);
-////        progressBar.startAnimation(animation);
-//        Ion.with(this).load(source.getUrl()).intoImageView(imageViewWallpaper).setCallback(new FutureCallback<ImageView>() {
-//            @Override
-//            public void onCompleted(Exception e, ImageView result) {
-//
-//                progressBar.setVisibility(View.GONE);
-//                ViewGroup.LayoutParams imageParams = imageViewWallpaper.getLayoutParams();
-////                ViewGroup.LayoutParams frameParams = gifFrame.getLayoutParams();
-////
-////                float ratio = (float) screenWidthFrame / (float) source.getWidth();
-////
-////                imageParams.height = (int) (source.getHeight() * ratio);
-////                imageParams.width = screenWidthFrame;
-////
-////
-////                frameParams.height = imageParams.height;
-////                frameParams.width = imageParams.width;
-////
-////                gifFrame.setLayoutParams(frameParams);
-////                fullScreenGifIV.setLayoutParams(imageParams);
-//            }
-//        });
-//    }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    wpFrame.setVisibility(View.GONE);
+                }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (gifFrame.getVisibility() == View.VISIBLE) {
-//            Animation animation = AnimationUtils.loadAnimation(this, R.anim.scale_in);
-//            animation.setInterpolator(new OvershootInterpolator());
-//            gifFrame.startAnimation(animation);
-//            animation.setAnimationListener(new Animation.AnimationListener() {
-//                @Override
-//                public void onAnimationStart(Animation animation) {
-//                }
-//
-//                @Override
-//                public void onAnimationEnd(Animation animation) {
-//                    gifFrame.setVisibility(View.GONE);
-//                }
-//
-//                @Override
-//                public void onAnimationRepeat(Animation animation) {
-//                }
-//            });
-//            return;
-//        }
-//        super.onBackPressed();
-//    }
-}
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            return;
+        }
+            super.onBackPressed();
+        }
+    }
+

@@ -17,4 +17,12 @@
         android:id="@+id/walpaperRecyclerView">
 
     </android.support.v7.widget.RecyclerView>
+    <include
+        android:id="@+id/wallpaper_frame"
+        layout="@layout/wallpaper_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
 </RelativeLayout>
